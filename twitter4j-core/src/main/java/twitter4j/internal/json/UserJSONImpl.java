@@ -16,6 +16,7 @@
 
 package twitter4j.internal.json;
 
+import com.afollestad.silk.caching.SilkComparable;
 import twitter4j.*;
 import twitter4j.conf.Configuration;
 import twitter4j.internal.http.HttpResponse;
@@ -34,8 +35,9 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
  *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
-/*package*/ final class UserJSONImpl extends TwitterResponseImpl implements User, java.io.Serializable {
+/*package*/ final class UserJSONImpl extends TwitterResponseImpl implements User, SilkComparable<User> {
 
+    private static final long serialVersionUID = -6345893237975349030L;
     private long id;
     private String name;
     private String screenName;
@@ -49,9 +51,7 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     private String url;
     private boolean isProtected;
     private int followersCount;
-
     private Status status;
-
     private String profileBackgroundColor;
     private String profileTextColor;
     private String profileLinkColor;
@@ -75,7 +75,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     private boolean translator;
     private int listedCount;
     private boolean isFollowRequestSent;
-    private static final long serialVersionUID = -6345893237975349030L;
 
     /*package*/UserJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -99,29 +98,121 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
 
     }
 
+    /**
+     * Get URL Entities from JSON Object.
+     * returns URLEntity array by entities/[category]/urls/url[]
+     *
+     * @param json     user json object
+     * @param category entities category. e.g. "description" or "url"
+     * @return URLEntity array by entities/[category]/urls/url[]
+     * @throws JSONException
+     * @throws TwitterException
+     */
+    private static URLEntity[] getURLEntitiesFromJSON(JSONObject json, String category) throws JSONException, TwitterException {
+        if (!json.isNull("entities")) {
+            JSONObject entitiesJSON = json.getJSONObject("entities");
+            if (!entitiesJSON.isNull(category)) {
+                JSONObject descriptionEntitiesJSON = entitiesJSON.getJSONObject(category);
+                if (!descriptionEntitiesJSON.isNull("urls")) {
+                    JSONArray urlsArray = descriptionEntitiesJSON.getJSONArray("urls");
+                    int len = urlsArray.length();
+                    URLEntity[] urlEntities = new URLEntity[len];
+                    for (int i = 0; i < len; i++) {
+                        urlEntities[i] = new URLEntityJSONImpl(urlsArray.getJSONObject(i));
+                    }
+                    return urlEntities;
+                }
+            }
+        }
+        return null;
+    }
+
+    /*package*/
+    static PagableResponseList<User> createPagableUserList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.clearThreadLocalMap();
+            }
+            JSONObject json = res.asJSONObject();
+            JSONArray list = json.getJSONArray("users");
+            int size = list.length();
+            PagableResponseList<User> users =
+                    new PagableResponseListImpl<User>(size, json, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject userJson = list.getJSONObject(i);
+                User user = new UserJSONImpl(userJson);
+                if (conf.isJSONStoreEnabled()) {
+                    DataObjectFactoryUtil.registerJSONObject(user, userJson);
+                }
+                users.add(user);
+            }
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.registerJSONObject(users, json);
+            }
+            return users;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        } catch (TwitterException te) {
+            throw te;
+        }
+    }
+
+    /*package*/
+    static ResponseList<User> createUserList(HttpResponse res, Configuration conf) throws TwitterException {
+        return createUserList(res.asJSONArray(), res, conf);
+    }
+
+    /*package*/
+    static ResponseList<User> createUserList(JSONArray list, HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.clearThreadLocalMap();
+            }
+            int size = list.length();
+            ResponseList<User> users =
+                    new ResponseListImpl<User>(size, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject json = list.getJSONObject(i);
+                User user = new UserJSONImpl(json);
+                users.add(user);
+                if (conf.isJSONStoreEnabled()) {
+                    DataObjectFactoryUtil.registerJSONObject(user, json);
+                }
+            }
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.registerJSONObject(users, list);
+            }
+            return users;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        } catch (TwitterException te) {
+            throw te;
+        }
+    }
+
     private void init(JSONObject json) throws TwitterException {
         try {
             id = getLong("id", json);
             name = getRawString("name", json);
             screenName = getRawString("screen_name", json);
             location = getRawString("location", json);
-            
+
             // descriptionUrlEntities <=> entities/descriptions/urls[]
             descriptionURLEntities = getURLEntitiesFromJSON(json, "description");
             descriptionURLEntities = descriptionURLEntities == null ? new URLEntity[0] : descriptionURLEntities;
-            
+
             // urlEntity <=> entities/url/urls[]
             URLEntity[] urlEntities = getURLEntitiesFromJSON(json, "url");
             if (urlEntities != null && urlEntities.length > 0) {
                 urlEntity = urlEntities[0];
             }
-            
+
             description = getRawString("description", json);
             if (description != null) {
-                description = HTMLEntity.unescapeAndSlideEntityIncdices(description, 
+                description = HTMLEntity.unescapeAndSlideEntityIncdices(description,
                         null, descriptionURLEntities, null, null);
             }
-            
+
             isContributorsEnabled = getBoolean("contributors_enabled", json);
             profileImageUrl = getRawString("profile_image_url", json);
             profileImageUrlHttps = getRawString("profile_image_url_https", json);
@@ -159,35 +250,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         } catch (JSONException jsone) {
             throw new TwitterException(jsone.getMessage() + ":" + json.toString(), jsone);
         }
-    }
-    
-    /**
-     * Get URL Entities from JSON Object.
-     * returns URLEntity array by entities/[category]/urls/url[]
-     * 
-     * @param json user json object
-     * @param category entities category. e.g. "description" or "url"
-     * @return URLEntity array by entities/[category]/urls/url[]
-     * @throws JSONException
-     * @throws TwitterException
-     */
-    private static URLEntity[] getURLEntitiesFromJSON(JSONObject json, String category) throws JSONException, TwitterException {
-        if (!json.isNull("entities")) {
-            JSONObject entitiesJSON = json.getJSONObject("entities");
-            if (!entitiesJSON.isNull(category)) {
-                JSONObject descriptionEntitiesJSON = entitiesJSON.getJSONObject(category);
-                if (!descriptionEntitiesJSON.isNull("urls")) {
-                    JSONArray urlsArray = descriptionEntitiesJSON.getJSONArray("urls");
-                    int len = urlsArray.length();
-                    URLEntity[] urlEntities = new URLEntity[len];
-                    for (int i = 0; i < len; i++) {
-                        urlEntities[i] = new URLEntityJSONImpl(urlsArray.getJSONObject(i));
-                    }
-                    return urlEntities;
-                }
-            }
-        }
-        return null;
     }
 
     @Override
@@ -291,6 +353,7 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
             return null;
         }
     }
+
     @Override
     public String getProfileImageURLHttps() {
         return profileImageUrlHttps;
@@ -404,7 +467,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         return status;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -466,7 +528,7 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
      */
     @Override
     public String getProfileBannerURL() {
-        return profileBannerImageUrl != null ? profileBannerImageUrl+"/web" : null;
+        return profileBannerImageUrl != null ? profileBannerImageUrl + "/web" : null;
     }
 
     @Override
@@ -565,7 +627,7 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     public URLEntity[] getDescriptionURLEntities() {
         return descriptionURLEntities;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -576,69 +638,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
             urlEntity = new URLEntityJSONImpl(0, plainURL.length(), plainURL, plainURL, plainURL);
         }
         return urlEntity;
-    }
-    
-    /*package*/
-    static PagableResponseList<User> createPagableUserList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.clearThreadLocalMap();
-            }
-            JSONObject json = res.asJSONObject();
-            JSONArray list = json.getJSONArray("users");
-            int size = list.length();
-            PagableResponseList<User> users =
-                    new PagableResponseListImpl<User>(size, json, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject userJson = list.getJSONObject(i);
-                User user = new UserJSONImpl(userJson);
-                if (conf.isJSONStoreEnabled()) {
-                    DataObjectFactoryUtil.registerJSONObject(user, userJson);
-                }
-                users.add(user);
-            }
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.registerJSONObject(users, json);
-            }
-            return users;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        } catch (TwitterException te) {
-            throw te;
-        }
-    }
-
-    /*package*/
-    static ResponseList<User> createUserList(HttpResponse res, Configuration conf) throws TwitterException {
-        return createUserList(res.asJSONArray(), res, conf);
-    }
-
-    /*package*/
-    static ResponseList<User> createUserList(JSONArray list, HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.clearThreadLocalMap();
-            }
-            int size = list.length();
-            ResponseList<User> users =
-                    new ResponseListImpl<User>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject json = list.getJSONObject(i);
-                User user = new UserJSONImpl(json);
-                users.add(user);
-                if (conf.isJSONStoreEnabled()) {
-                    DataObjectFactoryUtil.registerJSONObject(user, json);
-                }
-            }
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.registerJSONObject(users, list);
-            }
-            return users;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        } catch (TwitterException te) {
-            throw te;
-        }
     }
 
     @Override
@@ -697,4 +696,13 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
                 '}';
     }
 
+    @Override
+    public Object getSilkId() {
+        return getId();
+    }
+
+    @Override
+    public boolean equalTo(User other) {
+        return getId() == other.getId();
+    }
 }

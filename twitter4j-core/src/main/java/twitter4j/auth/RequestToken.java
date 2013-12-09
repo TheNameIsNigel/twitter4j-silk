@@ -49,7 +49,7 @@ public final class RequestToken extends OAuthToken implements java.io.Serializab
 
     /**
      * @return authorization URL
-     *         since Twitter4J 2.0.0
+     * since Twitter4J 2.0.0
      */
     public String getAuthorizationURL() {
         return conf.getOAuthAuthorizationURL() + "?oauth_token=" + getToken();
@@ -57,7 +57,7 @@ public final class RequestToken extends OAuthToken implements java.io.Serializab
 
     /**
      * @return authentication URL
-     *         since Twitter4J 2.0.10
+     * since Twitter4J 2.0.10
      */
     public String getAuthenticationURL() {
         return conf.getOAuthAuthenticationURL() + "?oauth_token=" + getToken();

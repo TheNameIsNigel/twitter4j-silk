@@ -92,7 +92,7 @@ import twitter4j.internal.org.json.JSONObject;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || ((Object) this).getClass() != o.getClass()) return false;
 
         HashtagEntityJSONImpl that = (HashtagEntityJSONImpl) o;
 
@@ -111,5 +111,15 @@ import twitter4j.internal.org.json.JSONObject;
         return "HashtagEntityJSONImpl{" +
                 "text='" + text + '\'' +
                 '}';
+    }
+
+    @Override
+    public Object getSilkId() {
+        return getText();
+    }
+
+    @Override
+    public boolean equalTo(HashtagEntity other) {
+        return getText().equals(other.getText());
     }
 }

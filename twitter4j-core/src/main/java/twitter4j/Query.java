@@ -423,7 +423,7 @@ public final class Query implements java.io.Serializable {
         }
     }
 
-    /*package*/ String nextPage(){
+    /*package*/ String nextPage() {
         return nextPageQuery;
     }
 

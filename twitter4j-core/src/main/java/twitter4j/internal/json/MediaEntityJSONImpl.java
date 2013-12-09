@@ -17,6 +17,7 @@ package twitter4j.internal.json;
 
 import twitter4j.MediaEntity;
 import twitter4j.TwitterException;
+import twitter4j.URLEntity;
 import twitter4j.internal.org.json.JSONArray;
 import twitter4j.internal.org.json.JSONException;
 import twitter4j.internal.org.json.JSONObject;
@@ -69,15 +70,15 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
         }
     }
 
-    private void addMediaEntitySizeIfNotNull(Map<Integer, MediaEntity.Size> sizes, JSONObject sizesJSON, Integer size, String key) throws JSONException {
-        if(!sizesJSON.isNull(key)){
-            sizes.put(size, new Size(sizesJSON.getJSONObject(key)));
-        }
-    }
-
     /* For serialization purposes only. */
     /* package */ MediaEntityJSONImpl() {
 
+    }
+
+    private void addMediaEntitySizeIfNotNull(Map<Integer, MediaEntity.Size> sizes, JSONObject sizesJSON, Integer size, String key) throws JSONException {
+        if (!sizesJSON.isNull(key)) {
+            sizes.put(size, new Size(sizesJSON.getJSONObject(key)));
+        }
     }
 
     /**
@@ -165,6 +166,47 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
         return super.getEnd();
     }
 
+    @Override
+    public Object getSilkId() {
+        return getURL();
+    }
+
+    @Override
+    public boolean equalTo(URLEntity other) {
+        return getURL().equals(other.getURL());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MediaEntityJSONImpl)) return false;
+
+        MediaEntityJSONImpl that = (MediaEntityJSONImpl) o;
+
+        if (id != that.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "MediaEntityJSONImpl{" +
+                "id=" + id +
+                ", url=" + url +
+                ", mediaURL=" + mediaURL +
+                ", mediaURLHttps=" + mediaURLHttps +
+                ", expandedURL=" + expandedURL +
+                ", displayURL='" + displayURL + '\'' +
+                ", sizes=" + sizes +
+                ", type=" + type +
+                '}';
+    }
+
     static class Size implements MediaEntity.Size {
         private static final long serialVersionUID = 8681853416159361581L;
         int width;
@@ -222,36 +264,5 @@ public class MediaEntityJSONImpl extends EntityIndex implements MediaEntity {
                     ", resize=" + resize +
                     '}';
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof MediaEntityJSONImpl)) return false;
-
-        MediaEntityJSONImpl that = (MediaEntityJSONImpl) o;
-
-        if (id != that.id) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
-    @Override
-    public String toString() {
-        return "MediaEntityJSONImpl{" +
-                "id=" + id +
-                ", url=" + url +
-                ", mediaURL=" + mediaURL +
-                ", mediaURLHttps=" + mediaURLHttps +
-                ", expandedURL=" + expandedURL +
-                ", displayURL='" + displayURL + '\'' +
-                ", sizes=" + sizes +
-                ", type=" + type +
-                '}';
     }
 }

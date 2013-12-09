@@ -37,7 +37,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
 /*package*/ final class StatusJSONImpl extends TwitterResponseImpl implements Status, java.io.Serializable {
     private static final Logger logger = Logger.getLogger(StatusJSONImpl.class);
     private static final long serialVersionUID = 7548618898682727465L;
-
     private Date createdAt;
     private long id;
     private String text;
@@ -55,9 +54,7 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     private long retweetCount;
     private boolean isPossiblySensitive;
     private String isoLanguageCode;
-
     private long[] contributorsIDs;
-
     private Status retweetedStatus;
     private UserMentionEntity[] userMentionEntities;
     private URLEntity[] urlEntities;
@@ -65,6 +62,7 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     private MediaEntity[] mediaEntities;
     private SymbolEntity[] symbolEntities;
     private long currentUserRetweetId = -1L;
+    private User user = null;
 
     /*package*/StatusJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -92,6 +90,32 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     /* Only for serialization purposes. */
     /*package*/ StatusJSONImpl() {
 
+    }
+
+    /*package*/
+    static ResponseList<Status> createStatusList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.clearThreadLocalMap();
+            }
+            JSONArray list = res.asJSONArray();
+            int size = list.length();
+            ResponseList<Status> statuses = new ResponseListImpl<Status>(size, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject json = list.getJSONObject(i);
+                Status status = new StatusJSONImpl(json);
+                if (conf.isJSONStoreEnabled()) {
+                    DataObjectFactoryUtil.registerJSONObject(status, json);
+                }
+                statuses.add(status);
+            }
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.registerJSONObject(statuses, list);
+            }
+            return statuses;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        }
     }
 
     private void init(JSONObject json) throws TwitterException {
@@ -236,7 +260,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         return this.source;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -316,8 +339,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     public int getFavoriteCount() {
         return favoriteCount;
     }
-
-    private User user = null;
 
     /**
      * {@inheritDoc}
@@ -422,32 +443,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         return isoLanguageCode;
     }
 
-    /*package*/
-    static ResponseList<Status> createStatusList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.clearThreadLocalMap();
-            }
-            JSONArray list = res.asJSONArray();
-            int size = list.length();
-            ResponseList<Status> statuses = new ResponseListImpl<Status>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject json = list.getJSONObject(i);
-                Status status = new StatusJSONImpl(json);
-                if (conf.isJSONStoreEnabled()) {
-                    DataObjectFactoryUtil.registerJSONObject(status, json);
-                }
-                statuses.add(status);
-            }
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.registerJSONObject(statuses, list);
-            }
-            return statuses;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        }
-    }
-
     @Override
     public int hashCode() {
         return (int) id;
@@ -492,5 +487,15 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
                 ", currentUserRetweetId=" + currentUserRetweetId +
                 ", user=" + user +
                 '}';
+    }
+
+    @Override
+    public Object getSilkId() {
+        return getId();
+    }
+
+    @Override
+    public boolean equalTo(Status other) {
+        return getId() == other.getId();
     }
 }

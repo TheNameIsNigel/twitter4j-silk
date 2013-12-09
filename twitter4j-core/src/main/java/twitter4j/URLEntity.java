@@ -16,13 +16,15 @@
 
 package twitter4j;
 
+import com.afollestad.silk.caching.SilkComparable;
+
 /**
  * A data interface representing one single URL entity.
  *
  * @author Mocel - mocel at guma.jp
  * @since Twitter4J 2.1.9
  */
-public interface URLEntity extends TweetEntity, java.io.Serializable {
+public interface URLEntity extends TweetEntity, SilkComparable<URLEntity> {
 
     /**
      * Returns the URL mentioned in the tweet.<br>

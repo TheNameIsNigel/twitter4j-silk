@@ -324,7 +324,6 @@ public class JSONTokener {
     }
 
 
-
     /**
      * Make a JSONException to signal a syntax error.
      *

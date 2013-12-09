@@ -16,6 +16,8 @@
 
 package twitter4j;
 
+import com.afollestad.silk.caching.SilkComparable;
+
 import java.util.Date;
 
 /**
@@ -23,7 +25,7 @@ import java.util.Date;
  *
  * @author Yusuke Yamamoto - yusuke at mac.com
  */
-public interface DirectMessage extends TwitterResponse, EntitySupport, java.io.Serializable {
+public interface DirectMessage extends TwitterResponse, EntitySupport, SilkComparable<DirectMessage> {
 
     long getId();
 
@@ -43,9 +45,7 @@ public interface DirectMessage extends TwitterResponse, EntitySupport, java.io.S
 
     String getRecipientScreenName();
 
-
     User getSender();
-
 
     User getRecipient();
 

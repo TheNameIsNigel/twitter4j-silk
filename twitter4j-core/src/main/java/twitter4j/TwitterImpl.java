@@ -237,7 +237,7 @@ class TwitterImpl extends TwitterBaseImpl implements Twitter {
     @Override
     public IDs getRetweeterIds(long statusId, int count, long cursor) throws TwitterException {
         return factory.createIDs(get(conf.getRestBaseURL() + "statuses/retweeters/ids.json?id=" + statusId
-                + "&cursor="+cursor+"&count="+count));
+                + "&cursor=" + cursor + "&count=" + count));
     }
 
     /**

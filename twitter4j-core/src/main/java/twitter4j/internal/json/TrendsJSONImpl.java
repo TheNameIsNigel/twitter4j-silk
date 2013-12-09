@@ -37,16 +37,11 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.getDate;
  * @since Twitter4J 2.0.2
  */
 /*package*/ final class TrendsJSONImpl extends TwitterResponseImpl implements Trends, java.io.Serializable {
+    private static final long serialVersionUID = -7151479143843312309L;
     private Date asOf;
     private Date trendAt;
     private Trend[] trends;
     private Location location;
-    private static final long serialVersionUID = -7151479143843312309L;
-
-    @Override
-    public int compareTo(Trends that) {
-        return this.trendAt.compareTo(that.getTrendAt());
-    }
 
     TrendsJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -64,30 +59,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.getDate;
     TrendsJSONImpl(String jsonStr, boolean storeJSON) throws TwitterException {
         init(jsonStr, storeJSON);
     }
-
-    void init(String jsonStr, boolean storeJSON) throws TwitterException {
-        try {
-            JSONObject json;
-            if (jsonStr.startsWith("[")) {
-                JSONArray array = new JSONArray(jsonStr);
-                if (array.length() > 0) {
-                    json = array.getJSONObject(0);
-                } else {
-                    throw new TwitterException("No trends found on the specified woeid");
-                }
-            } else {
-                json = new JSONObject(jsonStr);
-            }
-            this.asOf = z_T4JInternalParseUtil.parseTrendsDate(json.getString("as_of"));
-            this.location = extractLocation(json, storeJSON);
-            JSONArray array = json.getJSONArray("trends");
-            this.trendAt = asOf;
-            this.trends = jsonArrayToTrendArray(array, storeJSON);
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone.getMessage(), jsone);
-        }
-    }
-
 
     /*package*/ TrendsJSONImpl(Date asOf, Location location, Date trendAt, Trend[] trends) {
         this.asOf = asOf;
@@ -158,6 +129,34 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.getDate;
             trends[i] = new TrendJSONImpl(trend, storeJSON);
         }
         return trends;
+    }
+
+    @Override
+    public int compareTo(Trends that) {
+        return this.trendAt.compareTo(that.getTrendAt());
+    }
+
+    void init(String jsonStr, boolean storeJSON) throws TwitterException {
+        try {
+            JSONObject json;
+            if (jsonStr.startsWith("[")) {
+                JSONArray array = new JSONArray(jsonStr);
+                if (array.length() > 0) {
+                    json = array.getJSONObject(0);
+                } else {
+                    throw new TwitterException("No trends found on the specified woeid");
+                }
+            } else {
+                json = new JSONObject(jsonStr);
+            }
+            this.asOf = z_T4JInternalParseUtil.parseTrendsDate(json.getString("as_of"));
+            this.location = extractLocation(json, storeJSON);
+            JSONArray array = json.getJSONArray("trends");
+            this.trendAt = asOf;
+            this.trends = jsonArrayToTrendArray(array, storeJSON);
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone.getMessage(), jsone);
+        }
     }
 
     /**

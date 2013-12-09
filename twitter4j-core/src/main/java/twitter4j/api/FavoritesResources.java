@@ -92,8 +92,8 @@ public interface FavoritesResources {
      * Returns the 20 most recent favorite statuses for the authenticating user or user specified by the ID parameter in the requested format.
      * <br>This method calls http://api.twitter.com/1.1/favorites/[id].json
      *
-     * @param screenName     the screen name of the user for whom to request a list of favorite statuses
-     * @param paging controls pagination. Supports sinceId and page parameters.
+     * @param screenName the screen name of the user for whom to request a list of favorite statuses
+     * @param paging     controls pagination. Supports sinceId and page parameters.
      * @return ResponseList<Status>
      * @throws TwitterException when Twitter service or network is unavailable
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/favorites">GET favorites | Twitter Developers</a>

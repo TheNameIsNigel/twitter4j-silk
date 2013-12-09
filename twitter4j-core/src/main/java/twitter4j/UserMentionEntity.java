@@ -16,7 +16,7 @@
 
 package twitter4j;
 
-import java.io.Serializable;
+import com.afollestad.silk.caching.SilkComparable;
 
 /**
  * A data interface representing one single user mention entity.
@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.1.9
  */
-public interface UserMentionEntity extends TweetEntity, Serializable {
+public interface UserMentionEntity extends TweetEntity, SilkComparable<UserMentionEntity> {
     /**
      * Returns the screen name mentioned in the status. This method implementation is to meet TweetEntity interface and the behavior is equivalent to {@link #getScreenName()}
      *

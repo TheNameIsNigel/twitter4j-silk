@@ -17,13 +17,15 @@
 package twitter4j;
 
 
+import com.afollestad.silk.caching.SilkComparable;
+
 /**
  * A data interface representing Trend.
  *
  * @author Yusuke Yamamoto - yusuke at mac.com
  * @since Twitter4J 2.0.2
  */
-public interface Trend extends java.io.Serializable {
+public interface Trend extends SilkComparable<Trend> {
     String getName();
 
     /**

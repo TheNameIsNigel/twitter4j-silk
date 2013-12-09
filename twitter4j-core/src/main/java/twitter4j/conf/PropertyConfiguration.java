@@ -119,10 +119,11 @@ public final class PropertyConfiguration extends ConfigurationBase implements ja
             props = (Properties) System.getProperties().clone();
             try {
                 Map<String, String> envMap = System.getenv();
-                for(String key :envMap.keySet()){
+                for (String key : envMap.keySet()) {
                     props.setProperty(key, envMap.get(key));
                 }
-            }catch(SecurityException ignore){}
+            } catch (SecurityException ignore) {
+            }
             normalize(props);
         } catch (SecurityException ignore) {
             // Unsigned applets are not allowed to access System properties

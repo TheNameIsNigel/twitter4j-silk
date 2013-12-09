@@ -84,7 +84,7 @@ final class HTMLEntity {
     static String unescapeAndSlideEntityIncdices(String text, UserMentionEntity[] userMentionEntities,
                                                  URLEntity[] urlEntities, HashtagEntity[] hashtagEntities,
                                                  MediaEntity[] mediaEntities) {
-        
+
         int entityIndexesLength = 0;
         entityIndexesLength += userMentionEntities == null ? 0 : userMentionEntities.length;
         entityIndexesLength += urlEntities == null ? 0 : urlEntities.length;
@@ -97,17 +97,17 @@ final class HTMLEntity {
             System.arraycopy(userMentionEntities, 0, entityIndexes, copyStartIndex, userMentionEntities.length);
             copyStartIndex += userMentionEntities.length;
         }
-        
+
         if (urlEntities != null) {
             System.arraycopy(urlEntities, 0, entityIndexes, copyStartIndex, urlEntities.length);
             copyStartIndex += urlEntities.length;
         }
-        
+
         if (hashtagEntities != null) {
             System.arraycopy(hashtagEntities, 0, entityIndexes, copyStartIndex, hashtagEntities.length);
             copyStartIndex += hashtagEntities.length;
         }
-        
+
         if (mediaEntities != null) {
             System.arraycopy(mediaEntities, 0, entityIndexes, copyStartIndex, mediaEntities.length);
         }
@@ -132,7 +132,7 @@ final class HTMLEntity {
                     if (entity != null) {
                         unescaped.append(entity);
                         i = semicolonIndex;
-                        delta=1-escaped.length();
+                        delta = 1 - escaped.length();
                     } else {
                         unescaped.append(c);
                     }

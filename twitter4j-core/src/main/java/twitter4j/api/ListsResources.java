@@ -27,7 +27,7 @@ public interface ListsResources {
      * <br>This method calls http://api.twitter.com/1.1/lists.json
      *
      * @param listOwnerScreenName The screen name of the list owner
-as returned to in the response body's next_cursor and previous_cursor attributes to page back and forth in the list.
+     *                            as returned to in the response body's next_cursor and previous_cursor attributes to page back and forth in the list.
      * @return the list of lists
      * @throws TwitterException when Twitter service or network is unavailable
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/lists/list">GET lists/list | Twitter Developers</a>

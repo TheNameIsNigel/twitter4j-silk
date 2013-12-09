@@ -47,7 +47,8 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     private HashtagEntity[] hashtagEntities;
     private MediaEntity[] mediaEntities;
     private SymbolEntity[] symbolEntities;
-
+    private User sender;
+    private User recipient;
 
     /*package*/DirectMessageJSONImpl(HttpResponse res, Configuration conf) throws TwitterException {
         super(res);
@@ -61,6 +62,34 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
 
     /*package*/DirectMessageJSONImpl(JSONObject json) throws TwitterException {
         init(json);
+    }
+
+    /*package*/
+    static ResponseList<DirectMessage> createDirectMessageList(HttpResponse res, Configuration conf) throws TwitterException {
+        try {
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.clearThreadLocalMap();
+            }
+            JSONArray list = res.asJSONArray();
+            int size = list.length();
+            ResponseList<DirectMessage> directMessages = new ResponseListImpl<DirectMessage>(size, res);
+            for (int i = 0; i < size; i++) {
+                JSONObject json = list.getJSONObject(i);
+                DirectMessage directMessage = new DirectMessageJSONImpl(json);
+                directMessages.add(directMessage);
+                if (conf.isJSONStoreEnabled()) {
+                    DataObjectFactoryUtil.registerJSONObject(directMessage, json);
+                }
+            }
+            if (conf.isJSONStoreEnabled()) {
+                DataObjectFactoryUtil.registerJSONObject(directMessages, list);
+            }
+            return directMessages;
+        } catch (JSONException jsone) {
+            throw new TwitterException(jsone);
+        } catch (TwitterException te) {
+            throw te;
+        }
     }
 
     private void init(JSONObject json) throws TwitterException {
@@ -190,8 +219,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         return recipientScreenName;
     }
 
-    private User sender;
-
     /**
      * {@inheritDoc}
      */
@@ -199,8 +226,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
     public User getSender() {
         return sender;
     }
-
-    private User recipient;
 
     /**
      * {@inheritDoc}
@@ -250,34 +275,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         return symbolEntities;
     }
 
-    /*package*/
-    static ResponseList<DirectMessage> createDirectMessageList(HttpResponse res, Configuration conf) throws TwitterException {
-        try {
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.clearThreadLocalMap();
-            }
-            JSONArray list = res.asJSONArray();
-            int size = list.length();
-            ResponseList<DirectMessage> directMessages = new ResponseListImpl<DirectMessage>(size, res);
-            for (int i = 0; i < size; i++) {
-                JSONObject json = list.getJSONObject(i);
-                DirectMessage directMessage = new DirectMessageJSONImpl(json);
-                directMessages.add(directMessage);
-                if (conf.isJSONStoreEnabled()) {
-                    DataObjectFactoryUtil.registerJSONObject(directMessage, json);
-                }
-            }
-            if (conf.isJSONStoreEnabled()) {
-                DataObjectFactoryUtil.registerJSONObject(directMessages, list);
-            }
-            return directMessages;
-        } catch (JSONException jsone) {
-            throw new TwitterException(jsone);
-        } catch (TwitterException te) {
-            throw te;
-        }
-    }
-
     @Override
     public int hashCode() {
         return (int) id;
@@ -313,5 +310,15 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
                 ", urlEntities=" + (urlEntities == null ? null : Arrays.asList(urlEntities)) +
                 ", hashtagEntities=" + (hashtagEntities == null ? null : Arrays.asList(hashtagEntities)) +
                 '}';
+    }
+
+    @Override
+    public Object getSilkId() {
+        return getId();
+    }
+
+    @Override
+    public boolean equalTo(DirectMessage other) {
+        return getId() == other.getId();
     }
 }

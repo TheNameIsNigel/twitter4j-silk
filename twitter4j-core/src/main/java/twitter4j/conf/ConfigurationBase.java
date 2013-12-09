@@ -79,7 +79,7 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
     private boolean includeEntitiesEnabled = true;
 
     private boolean includeMyRetweetEnabled = true;
-    
+
     private boolean trimUserEnabled = false;
 
     private boolean jsonStoreEnabled;
@@ -684,17 +684,17 @@ class ConfigurationBase implements Configuration, java.io.Serializable {
         return this.includeMyRetweetEnabled;
     }
 
-	public void setIncludeMyRetweetEnabled(boolean enabled) {
-		this.includeMyRetweetEnabled = enabled;
-	}
-	
-	public boolean isTrimUserEnabled() {
-		return this.trimUserEnabled;
-	}
+    public void setIncludeMyRetweetEnabled(boolean enabled) {
+        this.includeMyRetweetEnabled = enabled;
+    }
 
-	public void setTrimUserEnabled(boolean enabled) {
-		this.trimUserEnabled = enabled;
-	}
+    public boolean isTrimUserEnabled() {
+        return this.trimUserEnabled;
+    }
+
+    public void setTrimUserEnabled(boolean enabled) {
+        this.trimUserEnabled = enabled;
+    }
 
     public boolean isJSONStoreEnabled() {
         return this.jsonStoreEnabled;

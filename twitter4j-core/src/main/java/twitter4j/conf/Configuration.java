@@ -110,7 +110,7 @@ public interface Configuration extends HttpClientConfiguration
 
     String getSiteStreamBaseURL();
 
-	boolean isIncludeMyRetweetEnabled();
+    boolean isIncludeMyRetweetEnabled();
 
     boolean isJSONStoreEnabled();
 
@@ -137,6 +137,6 @@ public interface Configuration extends HttpClientConfiguration
     boolean isIncludeRTsEnabled();
 
     boolean isIncludeEntitiesEnabled();
-    
+
     boolean isTrimUserEnabled();
 }

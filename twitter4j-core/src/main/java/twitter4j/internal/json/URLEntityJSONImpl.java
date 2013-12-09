@@ -65,7 +65,7 @@ import twitter4j.internal.org.json.JSONObject;
                 // sets expandedURL to url if expanded_url is null
                 // http://jira.twitter4j.org/browse/TFJ-704
                 this.expandedURL = json.getString("expanded_url");
-            }else{
+            } else {
                 this.expandedURL = url;
             }
 
@@ -73,7 +73,7 @@ import twitter4j.internal.org.json.JSONObject;
                 // sets displayURL to url if expanded_url is null
                 // http://jira.twitter4j.org/browse/TFJ-704
                 this.displayURL = json.getString("display_url");
-            }else{
+            } else {
                 this.displayURL = url;
             }
         } catch (JSONException jsone) {
@@ -132,7 +132,7 @@ import twitter4j.internal.org.json.JSONObject;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || ((Object) this).getClass() != o.getClass()) return false;
 
         URLEntityJSONImpl that = (URLEntityJSONImpl) o;
 
@@ -158,5 +158,15 @@ import twitter4j.internal.org.json.JSONObject;
                 ", expandedURL='" + expandedURL + '\'' +
                 ", displayURL='" + displayURL + '\'' +
                 '}';
+    }
+
+    @Override
+    public Object getSilkId() {
+        return getURL();
+    }
+
+    @Override
+    public boolean equalTo(URLEntity other) {
+        return getURL().equals(other.getURL());
     }
 }

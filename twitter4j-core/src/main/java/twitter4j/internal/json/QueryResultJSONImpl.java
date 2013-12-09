@@ -16,7 +16,10 @@
 
 package twitter4j.internal.json;
 
-import twitter4j.*;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Status;
+import twitter4j.TwitterException;
 import twitter4j.conf.Configuration;
 import twitter4j.internal.http.HttpResponse;
 import twitter4j.internal.org.json.JSONArray;

@@ -325,7 +325,7 @@ public interface FriendsFollowersResources {
      * <br>This method calls http://api.twitter.com/1.1/friends/list.json
      *
      * @param screenName The screen name of the user for whom to return results for.
-     * @param cursor Causes the results to be broken into pages of no more than 20 records at a time.
+     * @param cursor     Causes the results to be broken into pages of no more than 20 records at a time.
      * @return list of friends
      * @throws TwitterException when Twitter service or network is unavailable
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/friends/list">GET friends/list | Twitter Developers</a>
@@ -353,7 +353,7 @@ public interface FriendsFollowersResources {
      * <br>This method calls http://api.twitter.com/1.1/friends/list.json
      *
      * @param screenName The screen name of the user for whom to return results for.
-     * @param cursor Causes the results to be broken into pages of no more than 20 records at a time.
+     * @param cursor     Causes the results to be broken into pages of no more than 20 records at a time.
      * @return list of followers
      * @throws TwitterException when Twitter service or network is unavailable
      * @see <a href="https://dev.twitter.com/docs/api/1.1/get/followers/list">GET followers/list | Twitter Developers</a>

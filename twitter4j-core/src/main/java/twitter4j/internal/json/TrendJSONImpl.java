@@ -28,10 +28,10 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.getRawString;
  * @since Twitter4J 2.0.2
  */
 /*package*/ final class TrendJSONImpl implements Trend, java.io.Serializable {
+    private static final long serialVersionUID = 1925956704460743946L;
     private String name;
     private String url = null;
     private String query = null;
-    private static final long serialVersionUID = 1925956704460743946L;
 
     /*package*/ TrendJSONImpl(JSONObject json, boolean storeJSON) {
         this.name = getRawString("name", json);
@@ -109,5 +109,15 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.getRawString;
                 ", url='" + url + '\'' +
                 ", query='" + query + '\'' +
                 '}';
+    }
+
+    @Override
+    public Object getSilkId() {
+        return getQuery();
+    }
+
+    @Override
+    public boolean equalTo(Trend other) {
+        return getQuery().equals(other.getQuery());
     }
 }
