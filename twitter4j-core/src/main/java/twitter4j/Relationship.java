@@ -17,7 +17,7 @@
 package twitter4j;
 
 
-import com.afollestad.silk.caching.SilkComparable;
+import java.io.Serializable;
 
 /**
  * A data interface that has detailed information about a relationship between two users
@@ -26,7 +26,7 @@ import com.afollestad.silk.caching.SilkComparable;
  * @see <a href="https://dev.twitter.com/docs/api/1.1/get/friendships/show">GET friendships/show | Twitter Developers</a>
  * @since Twitter4J 2.1.0
  */
-public interface Relationship extends TwitterResponse, SilkComparable<Relationship> {
+public interface Relationship extends TwitterResponse, Serializable {
     /**
      * Returns the source user id
      *

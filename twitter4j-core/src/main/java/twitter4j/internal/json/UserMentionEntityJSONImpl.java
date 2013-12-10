@@ -122,7 +122,7 @@ import twitter4j.internal.org.json.JSONObject;
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || ((Object) this).getClass() != o.getClass()) return false;
 
         UserMentionEntityJSONImpl that = (UserMentionEntityJSONImpl) o;
 
@@ -148,5 +148,15 @@ import twitter4j.internal.org.json.JSONObject;
                 ", screenName='" + screenName + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    @Override
+    public Object getSilkId() {
+        return getId();
+    }
+
+    @Override
+    public boolean equalTo(UserMentionEntity other) {
+        return getId() == other.getId();
     }
 }

@@ -109,7 +109,6 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.*;
         }
     }
 
-
     /**
      * {@inheritDoc}
      */

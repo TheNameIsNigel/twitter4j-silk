@@ -67,7 +67,7 @@
       <file leaf-file-name="TrendJSONImpl.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/twitter4j/internal/json/TrendJSONImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="120" column="49" selection-start="3130" selection-end="3130" vertical-scroll-proportion="2.8044217" vertical-offset="0" max-vertical-offset="1802">
+            <state line="27" column="44" selection-start="898" selection-end="898" vertical-scroll-proportion="0.28911564" vertical-offset="0" max-vertical-offset="1802">
               <folding />
             </state>
           </provider>
@@ -342,16 +342,16 @@
       <changelist id="59da7ba2-9a3f-4d78-b91e-0614187994ab" name="Default" comment="" />
       <created>1386609611023</created>
       <updated>1386609611023</updated>
-      <workItem from="1386609614357" duration="787000" />
+      <workItem from="1386609614357" duration="873000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="787000" />
+    <option name="totallyTimeSpent" value="873000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -371,7 +371,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -610,7 +610,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/twitter4j/internal/json/TrendJSONImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="120" column="49" selection-start="3130" selection-end="3130" vertical-scroll-proportion="2.8044217" vertical-offset="0" max-vertical-offset="1802">
+        <state line="27" column="44" selection-start="898" selection-end="898" vertical-scroll-proportion="0.28911564" vertical-offset="0" max-vertical-offset="1802">
           <folding />
         </state>
       </provider>
